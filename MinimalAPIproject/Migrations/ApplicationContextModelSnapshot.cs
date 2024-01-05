@@ -22,21 +22,6 @@ namespace MinimalAPIproject.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("InterestPerson", b =>
-                {
-                    b.Property<int>("InterestsInterestId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PersonsPersonId")
-                        .HasColumnType("int");
-
-                    b.HasKey("InterestsInterestId", "PersonsPersonId");
-
-                    b.HasIndex("PersonsPersonId");
-
-                    b.ToTable("InterestPerson");
-                });
-
             modelBuilder.Entity("MinimalAPIproject.Models.Interest", b =>
                 {
                     b.Property<int>("InterestId")
@@ -73,14 +58,14 @@ namespace MinimalAPIproject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PersonInterestLinkId")
+                    b.Property<int?>("PersonInterestId")
                         .HasColumnType("int");
 
                     b.HasKey("InterestLinkId");
 
                     b.HasIndex("InterestId");
 
-                    b.HasIndex("PersonInterestLinkId");
+                    b.HasIndex("PersonInterestId");
 
                     b.ToTable("InterestLinks");
                 });
@@ -93,13 +78,40 @@ namespace MinimalAPIproject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PersonId"), 1L, 1);
 
-                    b.Property<string>("Name")
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PersonId");
 
                     b.ToTable("Persons");
+                });
+
+            modelBuilder.Entity("MinimalAPIproject.Models.PersonInterest", b =>
+                {
+                    b.Property<int>("PersonInterestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PersonInterestId"), 1L, 1);
+
+                    b.Property<int>("InterestId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PersonInterestId");
+
+                    b.HasIndex("InterestId");
+
+                    b.HasIndex("PersonId");
+
+                    b.ToTable("PersonInterests");
                 });
 
             modelBuilder.Entity("MinimalAPIproject.Models.PersonInterestLink", b =>
@@ -110,17 +122,14 @@ namespace MinimalAPIproject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PersonInterestLinkId"), 1L, 1);
 
-                    b.Property<int>("InterestId")
-                        .HasColumnType("int");
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PersonId")
+                    b.Property<int>("PersonInterestId")
                         .HasColumnType("int");
 
                     b.HasKey("PersonInterestLinkId");
-
-                    b.HasIndex("InterestId");
-
-                    b.HasIndex("PersonId");
 
                     b.ToTable("PersonInterestLinks");
                 });
@@ -147,21 +156,6 @@ namespace MinimalAPIproject.Migrations
                     b.ToTable("PhoneNumbers");
                 });
 
-            modelBuilder.Entity("InterestPerson", b =>
-                {
-                    b.HasOne("MinimalAPIproject.Models.Interest", null)
-                        .WithMany()
-                        .HasForeignKey("InterestsInterestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MinimalAPIproject.Models.Person", null)
-                        .WithMany()
-                        .HasForeignKey("PersonsPersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("MinimalAPIproject.Models.InterestLink", b =>
                 {
                     b.HasOne("MinimalAPIproject.Models.Interest", "Interest")
@@ -170,23 +164,23 @@ namespace MinimalAPIproject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MinimalAPIproject.Models.PersonInterestLink", null)
+                    b.HasOne("MinimalAPIproject.Models.PersonInterest", null)
                         .WithMany("Links")
-                        .HasForeignKey("PersonInterestLinkId");
+                        .HasForeignKey("PersonInterestId");
 
                     b.Navigation("Interest");
                 });
 
-            modelBuilder.Entity("MinimalAPIproject.Models.PersonInterestLink", b =>
+            modelBuilder.Entity("MinimalAPIproject.Models.PersonInterest", b =>
                 {
                     b.HasOne("MinimalAPIproject.Models.Interest", "Interest")
-                        .WithMany("InterestLinks")
+                        .WithMany("PersonInterests")
                         .HasForeignKey("InterestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MinimalAPIproject.Models.Person", "Person")
-                        .WithMany("InterestLinks")
+                        .WithMany("PersonInterests")
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -209,17 +203,17 @@ namespace MinimalAPIproject.Migrations
 
             modelBuilder.Entity("MinimalAPIproject.Models.Interest", b =>
                 {
-                    b.Navigation("InterestLinks");
+                    b.Navigation("PersonInterests");
                 });
 
             modelBuilder.Entity("MinimalAPIproject.Models.Person", b =>
                 {
-                    b.Navigation("InterestLinks");
+                    b.Navigation("PersonInterests");
 
                     b.Navigation("PhoneNumbers");
                 });
 
-            modelBuilder.Entity("MinimalAPIproject.Models.PersonInterestLink", b =>
+            modelBuilder.Entity("MinimalAPIproject.Models.PersonInterest", b =>
                 {
                     b.Navigation("Links");
                 });
