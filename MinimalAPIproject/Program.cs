@@ -18,6 +18,7 @@ namespace MinimalAPIproject
             // gets (returns) data
             app.MapGet("/", () => "Hello World!");
 
+            // return all people
             app.MapGet("/people", (ApplicationContext context) =>
             {
 
@@ -26,6 +27,29 @@ namespace MinimalAPIproject
                     .ToArray());
 
             });
+            // returns specific person, ? to include null. should be{personid} with single or default, om null results.notfound else results.json
+            app.MapGet("/people/{name?}", (ApplicationContext context, string? name) =>
+            {
+                //var interestOfName = context.Persons
+                //    .Where(p => p.FirstName+p.LastName == name)
+                //    .Select(p => new
+                //    {
+                //        Person = new { p.FirstName, p.LastName, p.PhoneNumbers },
+                //        Interests = p.PersonInterests.Select(pi => pi.Interest).Distinct().ToArray()
+                //    })
+                //    .ToArray();
+
+                //return Results.Json(interestOfName);
+
+            });
+            // edit person
+            //app.MapPut
+            // edit phonenumber
+            // edit link
+            // edit interest
+
+            // returns searched for query?
+
             // returns list of given name and their interests
             app.MapGet("/people/{name}/interests", (ApplicationContext context, string name) =>
             {
@@ -48,7 +72,7 @@ namespace MinimalAPIproject
                     .Where(p => $"{p.FirstName}{p.LastName}" == name)
                     .SelectMany(p => p.PersonInterests
                         .Where(pi => pi.Interest.Title == interest)
-                        .SelectMany(pi => pi.Links))
+                        .SelectMany(pi => pi.UrlLink))
                     .Distinct()
                     .ToArray();
 
@@ -97,13 +121,13 @@ namespace MinimalAPIproject
                     if (personInterest != null)
                     {
                         //checks if link already exist
-                        var existingLink = personInterest.Links.FirstOrDefault(link => link.Link == newLink.Link);
+                        var existingLink = personInterest.UrlLink.FirstOrDefault(link => link.UrlLink == newLink.UrlLink);
 
                         // if link doesn't exist, adds it
                         if (existingLink == null)
                         {
                             existingLink = newLink;
-                            personInterest.Links.Add(existingLink);
+                            personInterest.UrlLink.Add(existingLink);
                             context.SaveChanges();
                             return Results.StatusCode((int)HttpStatusCode.Created);
                         }
@@ -130,7 +154,7 @@ namespace MinimalAPIproject
             });
 
             // add new person
-            app.MapPost("/people", (ApplicationContext context, Person person) =>
+            app.MapPost("/person", (ApplicationContext context, Person person) =>
             {
                 context.Persons.Add(person);
                 context.SaveChanges();
