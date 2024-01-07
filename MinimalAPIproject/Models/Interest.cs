@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MinimalAPIproject.Models
 {
     public class Interest
     {
-        [Key]
-        public int InternalInterestId { get; set; }
+        //[Key]
+        //public int InternalInterestId { get; set; }
         public int InterestId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }

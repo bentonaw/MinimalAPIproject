@@ -4,8 +4,8 @@ namespace MinimalAPIproject.Models
 {
     public class InterestLink
     {
-        [Key]
-        public int InternalInterestLinkId { get; set; }
+        //[Key]
+        //public int InternalInterestLinkId { get; set; }
         public int InterestLinkId { get; set; }
         public string UrlLink { get; set; }
         
