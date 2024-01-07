@@ -27,18 +27,27 @@ namespace MinimalAPIproject.Handlers
                         .ToList()
                 })
                 .ToArray();
+
             return Results.Json(result);
         }
+
+        public static IResult ListInterestsOfPerson(ApplicationContext context, int personId)
+        {
+            Person? e = PersonFinder(context, personId);
+
+            if (e == null)
+            {
+                return Results.NotFound();
+            }
+
+            List<InterestViewModel> result = MapPersonInterests(e.PersonInterests, personId);
+
+            return Results.Json(result);
+        }
+
         public static IResult ViewPerson(ApplicationContext context, int personId)
         {
-            Person? e =
-                context.Persons
-                .Where(p => p.PersonId == personId)
-                .Include(p => p.PhoneNumbers)
-                .Include(p => p.PersonInterests)
-                    .ThenInclude(pi => pi.Interest)
-                        .ThenInclude(i => i.InterestLinks)
-                .SingleOrDefault();
+            Person? e = PersonFinder(context, personId);
 
             if(e == null)
             {
@@ -58,27 +67,42 @@ namespace MinimalAPIproject.Handlers
                         Number = pn.Number,
                     })
                     .ToList(),
-                Interests = e.PersonInterests
-                    .Where(pi => pi.PersonId == personId)
-                    .Select(pi => new InterestViewModel
-                    {
-                        InterestId = pi.Interest.InterestId,
-                        Title = pi.Interest.Title,
-                        Description = pi.Interest.Description,
-                        Links = pi.Interest.InterestLinks
-                            .Where(l => l.InterestId == pi.Interest.InterestId)
-                            .Select(l => new InterestLinkViewModel
-                            {
-                                InterestLinkId = l.Interest.InterestId,
-                                Link = l.UrlLink
-                            })
-                            .ToList()
-                    })
-                    .ToList()
+                Interests = MapPersonInterests(e.PersonInterests, personId)
             };
 
             return Results.Json(result);
+        }
 
+        private static Person? PersonFinder (ApplicationContext context, int personId)
+        {
+            return context.Persons
+                .Where(p => p.PersonId == personId)
+                .Include(p => p.PhoneNumbers)
+                .Include(p => p.PersonInterests)
+                    .ThenInclude(pi => pi.Interest)
+                        .ThenInclude(i => i.InterestLinks)
+                .SingleOrDefault();
+        }
+
+        private static List<InterestViewModel> MapPersonInterests(IEnumerable<PersonInterest> personInterests, int personId)
+        {
+            return personInterests
+                .Where(pi =>pi.PersonId == personId)
+                .Select(pi => new InterestViewModel
+                {
+                    InterestId = pi.Interest.InterestId,
+                    Title = pi.Interest.Title,
+                    Description = pi.Interest.Description,
+                    Links = pi.Interest.InterestLinks
+                        .Where(l => l.InterestId == pi.Interest.InterestId)
+                        .Select(l => new InterestLinkViewModel
+                        {
+                            InterestLinkId = l.Interest.InterestId,
+                            Link = l.UrlLink
+                        })
+                        .ToList()
+                })
+                .ToList();
         }
     }
 }
