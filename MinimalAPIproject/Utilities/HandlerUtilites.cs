@@ -41,5 +41,15 @@ namespace MinimalAPIproject.Utilities
                 })
                 .ToList();
         }
+        // Method for applying a query to find any of indicated type
+        public static IQueryable<T> ApplyFilter<T>(IQueryable<T> query, string filter, Func<T, string, bool> predicate)
+        {
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(item => predicate(item, filter));
+            }
+
+            return query;
+        }
     }
 }
