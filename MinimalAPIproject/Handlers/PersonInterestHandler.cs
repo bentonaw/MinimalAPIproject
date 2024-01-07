@@ -4,6 +4,7 @@ using MinimalAPIproject.Models;
 using MinimalAPIproject.Models.DTO;
 using MinimalAPIproject.Utilities;
 using System.Net;
+using Microsoft.EntityFrameworkCore;
 
 namespace MinimalAPIproject.Handlers
 {
@@ -24,32 +25,6 @@ namespace MinimalAPIproject.Handlers
             return Results.Json(result);
         }
 
-        // Returns list of links connected to specific person
-        public static IResult ListUrlLinksOfPerson(ApplicationContext context, int personId)
-        {
-            Person? e = HandlerUtilites.PersonFinder(context, personId);
-
-            if (e == null)
-            {
-                return Results.NotFound();
-            }
-
-            List<InterestLinkViewModel> result = new List<InterestLinkViewModel>();
-
-            foreach (PersonInterest personInterest in e.PersonInterests)
-            {
-                foreach (InterestLink interestLink in personInterest.Interest.InterestLinks)
-                {
-                    result.Add(new InterestLinkViewModel
-                    {
-                        InterestTitle = personInterest.Interest.Title,
-                        Link = interestLink.UrlLink
-                    });
-                }
-            }
-
-            return Results.Json(result);
-        }
         // Connects person to interest, if interest isn't found new interest is created
         public static IResult ConnectPersonToInterest(ApplicationContext context, int personId, InterestDto interest)
         {
@@ -90,39 +65,33 @@ namespace MinimalAPIproject.Handlers
             }
         }
 
-        public static IResult AddLinkToInterestOfPerson(ApplicationContext context, int personId, string interestTitle, InterestLinkDto newLink)
+        // Filters interest of person that include search query
+        public static IResult FilterInterest(ApplicationContext context, string query)
         {
-            Person person = HandlerUtilites.PersonFinder(context, personId);
-            if (person == null)
-            {
-                return Results.NotFound("Person not found.");
-            }
+            // Create a queryable representation of the interests in database
+            IQueryable<Interest> interestQuery = context.Interests.AsQueryable();
 
-            Interest? interest = person.PersonInterests
-                .Where(pi => pi.Interest.Title == interestTitle)
-                .Select(pi => pi.Interest)
-                .SingleOrDefault();
+            // Filters out interests with query in title.
+            IQueryable<Interest> filteredInterests = HandlerUtilites.ApplyFilter(interestQuery, query, (interest, filter) =>
+            interest.Title.Contains(filter));
 
-            if (interest == null)
-            {
-                return Results.NotFound("Interest for person not found");
-            }
+            // Convert the filteredPersons query into a List of PersonViewModel
+            List<InterestViewModel> result = filteredInterests
+                .Include(i => i.InterestLinks)
+                .Select(i => new InterestViewModel
+                {
+                    Title = i.Title,
+                    Description = i.Description,
+                    Links = i.InterestLinks
+                        .Select(l => new InterestLinkViewModel
+                        {
+                            Link = l.UrlLink,
+                        })
+                        .ToList()
+                })
+                .ToList();
 
-            // Check if the link already exists
-            if (interest.InterestLinks.Any(link => link.UrlLink == newLink.UrlLink))
-            {
-                return Results.Conflict("Link already exists for interest");
-            }
-
-            InterestLink interestLink = new InterestLink
-            {
-                UrlLink = newLink.UrlLink
-            };
-
-            interest.InterestLinks.Add(interestLink);
-            context.SaveChanges();
-
-            return Results.StatusCode((int)HttpStatusCode.Created);
+            return Results.Json(result);
         }
     }
 }

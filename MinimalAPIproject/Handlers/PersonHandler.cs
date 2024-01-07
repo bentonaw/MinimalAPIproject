@@ -62,5 +62,28 @@ namespace MinimalAPIproject.Handlers
 
             return Results.Json(result);
         }
+
+        // Returns persons matching query result
+        public static IResult FilterPersons(ApplicationContext context, string query, int personId)
+        {
+            // Create a queryable representation of the Persons in database
+            IQueryable<Person> personQuery = context.Persons.AsQueryable();
+
+            // Filters out persons with query in either first or last name and assigns to filteredPersons.
+            IQueryable<Person> filteredPersons = HandlerUtilites.ApplyFilter(personQuery, query, (person, filter) =>
+            person.FirstName.Contains(filter) || person.LastName.Contains(filter));
+
+            // Convert the filteredPersons query into a List of PersonViewModel
+            List<PersonViewModel> result = filteredPersons
+                .Select(p => new PersonViewModel
+                {
+                    PersonId = p.PersonId,
+                    FirstName = p.FirstName,
+                    LastName = p.LastName,
+                })
+                .ToList();
+
+            return Results.Json(result);
+        }
     }
 }
