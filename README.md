@@ -1,2 +1,1 @@
-work in progress..
-![ER-Diagram](https://github.com/bentonaw/MinimalAPIproject/assets/98620169/202cbbab-8df9-40e2-a92a-515df0078f2c)
+![ER-Diagram](https://github.com/bentonaw/MinimalAPIproject/assets/98620169/a10c5075-743a-426f-9a8f-e3eed7a93dc2)
