@@ -30,6 +30,8 @@ namespace MinimalAPIproject
             // Return a view of a specific person, lists everything connected to person
             app.MapGet("/persons/{personId}", PersonHandler.ViewPerson);
 
+            // To return pages with number of entries follow the example where pagesize is how many entries is displayed and page which page to view of the subset of entries. 
+            
             // Interest APIs
 
             // Return a list of interests of a specific person

@@ -5,14 +5,17 @@ using MinimalAPIproject.Models.ViewModels;
 using System.Net;
 using MinimalAPIproject.Models.DTO;
 using MinimalAPIproject.Utilities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MinimalAPIproject.Handlers
 {
     public static class PersonHandler
     {
         // Returns all persons
-        public static IResult ListPersons(ApplicationContext context)
+        public static IResult ListPersons(ApplicationContext context, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
+            HandlerUtilites.PageLimiter(page, pageSize);
+
             PersonViewModel[] result = 
                 context.Persons
                 .Include(p => p.PhoneNumbers)

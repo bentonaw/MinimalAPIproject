@@ -8,7 +8,6 @@
         // Foreign Keys to PersonInterest
         public int PersonId { get; set; }
         public int InterestId { get; set; }
-        public PersonInterest PersonInterest { get; set; }
         // Navigation property to specific person. 
         public Person Person { get; set; }
 
