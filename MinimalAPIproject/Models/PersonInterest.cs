@@ -12,6 +12,6 @@
         public Interest Interest { get; set; }
 
         // One-to-Many relationship: One person-interest combination can have multiple links
-        public List<PersonInterestLink> Links { get; set; }
+        public List<PersonInterestLink> LinksToInterest { get; set; }
     }
 }

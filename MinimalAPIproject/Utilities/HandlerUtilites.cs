@@ -51,5 +51,11 @@ namespace MinimalAPIproject.Utilities
 
             return query;
         }
+
+        // Method to implement paging and limiter to number of entries when listing items
+        public static int PageLimiter(int page, int pageSize)
+        {
+            return (page - 1) * pageSize;
+        }
     }
 }
