@@ -8,7 +8,7 @@
 ### Return a list of all persons that include search query in either first or last name
 _E.g: /persons/search?query=John_
 
-`GET /persons/search`
+`GET /persons/search?query={query}`
 
 ### Return a view of a specific person, lists everything connected to the person
 `GET /persons/{personId}`
