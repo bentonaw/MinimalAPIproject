@@ -55,6 +55,7 @@ namespace MinimalAPIproject
             // Returns all links of an interest connected to a specific person
             app.MapGet("/persons/{personId}/interests/{interestid}/links", PersonInterestLinkHandler.LinksOfInterest);
 
+            // Not working properly!!
             // Connect new link to an interest of a specific user
             /*{
               "linkToInterest": "samplelink"
