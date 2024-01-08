@@ -41,6 +41,10 @@ namespace MinimalAPIproject
             app.MapGet("/persons/{personId}/interests/search", PersonInterestHandler.FilterInterests);
 
             // Connects a person to new interest, if interest (by its title) already exists it connects person to said interest
+            /*{
+                "Title": "Sample Interest",
+                "Description": "Description of the interest",
+            }*/
             app.MapPost("/persons/{personId}/interests", PersonInterestHandler.ConnectPersonToInterest);
 
             // Links APIs
