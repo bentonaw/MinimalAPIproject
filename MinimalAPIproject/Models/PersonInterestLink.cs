@@ -10,6 +10,7 @@
         public int InterestId { get; set; }
         // Navigation property to specific person. 
         public Person Person { get; set; }
+        public Interest Interest { get; set; }
 
     }
 }

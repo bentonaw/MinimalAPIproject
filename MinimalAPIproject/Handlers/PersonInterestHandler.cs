@@ -65,29 +65,18 @@ namespace MinimalAPIproject.Handlers
             }
         }
 
-        // Filters interest of person that include search query
-        public static IResult FilterInterest(ApplicationContext context, string query)
+        // Filters interest of person that include search query in either title or description
+        public static IResult FilterInterests(ApplicationContext context,int personId, string query)
         {
-            // Create a queryable representation of the interests in database
-            IQueryable<Interest> interestQuery = context.Interests.AsQueryable();
-
-            // Filters out interests with query in title.
-            IQueryable<Interest> filteredInterests = HandlerUtilites.ApplyFilter(interestQuery, query, (interest, filter) =>
-            interest.Title.Contains(filter));
-
-            // Convert the filteredPersons query into a List of PersonViewModel
-            List<InterestViewModel> result = filteredInterests
-                .Include(i => i.InterestLinks)
-                .Select(i => new InterestViewModel
+            var result = context.Persons
+                .Where(p => p.PersonId == personId)
+                .SelectMany(p => p.PersonInterests)
+                .Where(pi => pi.Interest.Title.Contains(query) || pi.Interest.Description.Contains(query))
+                .Select(pi => new InterestViewModel
                 {
-                    Title = i.Title,
-                    Description = i.Description,
-                    Links = i.InterestLinks
-                        .Select(l => new InterestLinkViewModel
-                        {
-                            Link = l.UrlLink,
-                        })
-                        .ToList()
+                    InterestId = pi.Interest.InterestId,
+                    Title = pi.Interest.Title,
+                    Description = pi.Interest.Description,
                 })
                 .ToList();
 

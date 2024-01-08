@@ -1,9 +1,7 @@
 ﻿namespace MinimalAPIproject.Models.ViewModels
 {
-    public class InterestLinkViewModel
+    public class PersonInterestLinkViewModel
     {
-        public string InterestTitle { get; set; }
         public string LinkToInterest { get; set; }
-        
     }
 }

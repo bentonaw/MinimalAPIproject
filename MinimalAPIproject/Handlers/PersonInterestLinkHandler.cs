@@ -11,7 +11,7 @@ namespace MinimalAPIproject.Handlers
     public class PersonInterestLinkHandler
     {
         // Returns list of links connected to specific person
-        public static IResult ListUrlLinksOfPerson(ApplicationContext context, int personId)
+        public static IResult ListLinkToInterestsOfPerson(ApplicationContext context, int personId)
         {
             Person? e = HandlerUtilites.PersonFinder(context, personId);
 
@@ -24,12 +24,12 @@ namespace MinimalAPIproject.Handlers
 
             foreach (PersonInterest personInterest in e.PersonInterests)
             {
-                foreach (InterestLink interestLink in personInterest.Interest.InterestLinks)
+                foreach (PersonInterestLink personInterestLink in personInterest.Interest.PersonInterestLinks)
                 {
                     result.Add(new InterestLinkViewModel
                     {
                         InterestTitle = personInterest.Interest.Title,
-                        Link = interestLink.UrlLink
+                        LinkToInterest = personInterestLink.LinkToInterest,
                     });
                 }
             }
@@ -38,7 +38,7 @@ namespace MinimalAPIproject.Handlers
         }
 
         // Adds link to interest tied to specific person
-        public static IResult AddLinkToInterestOfPerson(ApplicationContext context, int personId, string interestTitle, InterestLinkDto newLink)
+        public static IResult AddLinkToInterestOfPerson(ApplicationContext context, int personId, string interestTitle, PersonInterestLinkDto newLink)
         {
             Person person = HandlerUtilites.PersonFinder(context, personId);
             if (person == null)
@@ -57,17 +57,17 @@ namespace MinimalAPIproject.Handlers
             }
 
             // Check if the link already exists
-            if (interest.InterestLinks.Any(link => link.UrlLink == newLink.UrlLink))
+            if (interest.PersonInterestLinks.Any(link => link.LinkToInterest == newLink.LinkToInterest))
             {
                 return Results.Conflict("Link already exists for interest");
             }
 
-            InterestLink interestLink = new InterestLink
+            PersonInterestLink personInterestLink = new PersonInterestLink
             {
-                UrlLink = newLink.UrlLink
+                LinkToInterest = newLink.LinkToInterest
             };
 
-            interest.InterestLinks.Add(interestLink);
+            interest.PersonInterestLinks.Add(personInterestLink);
             context.SaveChanges();
 
             return Results.StatusCode((int)HttpStatusCode.Created);
@@ -92,33 +92,10 @@ namespace MinimalAPIproject.Handlers
                 return Results.NotFound("Interest for person not found");
             }
 
-            List<InterestLinkViewModel> result = interest.InterestLinks
-                .Select(il => new InterestLinkViewModel
+            List<PersonInterestLinkViewModel> result = interest.PersonInterestLinks
+                .Select(il => new PersonInterestLinkViewModel
                 {
-                    Link = il.UrlLink
-                })
-                .ToList();
-
-            return Results.Json(result);
-        }
-
-        // Filters all links with search query, interesttitle is included
-        public static IResult FilterInterestLinks(ApplicationContext context, string query)
-        {
-            // Create a queryable representation of the interests in database
-            IQueryable<InterestLink> interestLinkQuery = context.InterestLinks.AsQueryable();
-
-            // Filters out interests with query in title.
-            IQueryable<InterestLink> filteredInterestLinks = HandlerUtilites.ApplyFilter(interestLinkQuery, query, (interestLink, filter) =>
-            interestLink.UrlLink.Contains(filter));
-
-            // Convert the filteredPersons query into a List of PersonViewModel
-            List<InterestLinkViewModel> result = filteredInterestLinks
-                .Include(il => il.Interest)
-                .Select(il => new InterestLinkViewModel
-                {
-                    InterestTitle = il.Interest.Title,
-                    Link = il.UrlLink
+                    LinkToInterest = il.LinkToInterest
                 })
                 .ToList();
 

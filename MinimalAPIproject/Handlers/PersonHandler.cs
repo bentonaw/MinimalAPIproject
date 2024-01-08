@@ -12,14 +12,13 @@ namespace MinimalAPIproject.Handlers
     public static class PersonHandler
     {
         // Returns all persons
-        public static IResult ListPersons(ApplicationContext context, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public static IResult ListPersons(ApplicationContext context)
         {
-            HandlerUtilites.PageLimiter(page, pageSize);
 
-            PersonViewModel[] result = 
+            PersonListViewModel[] result = 
                 context.Persons
                 .Include(p => p.PhoneNumbers)
-                .Select(p => new PersonViewModel()
+                .Select(p => new PersonListViewModel()
                 {
                     PersonId = p.PersonId,
                     FirstName = p.FirstName,
@@ -35,6 +34,7 @@ namespace MinimalAPIproject.Handlers
                 .ToArray();
 
             return Results.Json(result);
+
         }
 
         // Returns specific person with attached phonenumbers, interests and links to interests
@@ -60,24 +60,32 @@ namespace MinimalAPIproject.Handlers
                         Number = pn.Number,
                     })
                     .ToList(),
-                Interests = HandlerUtilites.MapPersonInterests(e.PersonInterests, personId)
-            };
+                Interests = e.PersonInterests
+                    .Where(pi => pi.PersonId == personId)
+                    .Select(pi => new InterestViewModel
+                    {
+                        InterestId = pi.Interest.InterestId,
+                        Title = pi.Interest.Title,
+                        Description = pi.Interest.Description,
+                        Links = pi.Interest.PersonInterestLinks
+                            .Where(link => link.PersonId == personId)
+                            .Select(link => new PersonInterestLinkViewModel
+                            {
+                                LinkToInterest = link.LinkToInterest
+                            })
+                            .ToList()
+                    })
+                    .ToList()
+                };
 
             return Results.Json(result);
         }
 
         // Returns persons matching query result
-        public static IResult FilterPersons(ApplicationContext context, string query, int personId)
+        public static IResult FilterPersons(ApplicationContext context, string query)
         {
-            // Create a queryable representation of the Persons in database
-            IQueryable<Person> personQuery = context.Persons.AsQueryable();
-
-            // Filters out persons with query in either first or last name and assigns to filteredPersons.
-            IQueryable<Person> filteredPersons = HandlerUtilites.ApplyFilter(personQuery, query, (person, filter) =>
-            person.FirstName.Contains(filter) || person.LastName.Contains(filter));
-
-            // Convert the filteredPersons query into a List of PersonViewModel
-            List<PersonViewModel> result = filteredPersons
+            var result = context.Persons
+                .Where(p => p.FirstName.Contains(query) || p.LastName.Contains(query))
                 .Select(p => new PersonViewModel
                 {
                     PersonId = p.PersonId,

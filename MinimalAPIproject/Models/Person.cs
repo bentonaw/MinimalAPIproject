@@ -5,11 +5,7 @@ namespace MinimalAPIproject.Models
 {
     public class Person
     {
-        [Key]
-        public int InternalPersonId { get; set; }
-        // Not used in database but only for routing endpoints to keep internalpersonID private.
-        [NotMapped]
-        public int PersonId => InternalPersonId + 10;
+        public int PersonId {  get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
 

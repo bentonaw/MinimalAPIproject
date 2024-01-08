@@ -2,7 +2,8 @@
 {
     public class PersonDto
     {
-        public string FullName { get; set; }
+        public string FirstName { get; set; }
+        public string LasttName { get; set; }
         public List<string> PhoneNumbers { get; set; }
     }
 }
