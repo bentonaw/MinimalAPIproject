@@ -8,7 +8,7 @@
 ### Return a list of all persons that include search query in either first or last name
 _E.g: /persons/search?query=John_
 
-`GET /persons/search?query={query}`
+`GET /persons/search`
 
 ### Return a view of a specific person, lists everything connected to the person
 `GET /persons/{personId}`
@@ -19,7 +19,9 @@ _E.g: /persons/search?query=John_
 `GET /persons/{personId}/interests`
 
 ### Return a list of interests of a specific person that includes search query
-`GET /persons/{personId}/interests/{query}`
+_E.g: /persons/1/interests/search?query=Tennis_
+
+`GET /persons/{personId}/interests/search`
 
 ### Connects a person to a new interest, if interest (by its title) already exists, it connects the person to said interest
 `POST /persons/{personId}/interests`
@@ -28,9 +30,6 @@ _E.g: /persons/search?query=John_
 
 ### Return a list of URL links connected to a person
 `GET /persons/{personId}/links`
-
-### Return a list of URL links connected to a person that includes search query
-`GET /persons/{personId}/links/{query}`
 
 ### Returns all links of an interest connected to a specific person
 `POST /persons/{personId}/{interestId}`
