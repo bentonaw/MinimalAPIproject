@@ -77,6 +77,11 @@ namespace MinimalAPIproject.Handlers
                     InterestId = pi.Interest.InterestId,
                     Title = pi.Interest.Title,
                     Description = pi.Interest.Description,
+                    Links = pi.Interest.PersonInterestLinks
+                        .Select(link => new PersonInterestLinkViewModel
+                            {
+                                LinkToInterest = link.LinkToInterest
+                            }).ToList()
                 })
                 .ToList();
 
