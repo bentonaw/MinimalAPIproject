@@ -19,11 +19,16 @@ _E.g: /persons/search?query=John_
 `GET /persons/{personId}/interests`
 
 ### Return a list of interests of a specific person that includes search query
-_E.g: /persons/1/interests/search?query=Tennis_
+E.g: _/persons/1/interests/search?query=Tennis_
 
 `GET /persons/{personId}/interests/search`
 
 ### Connects a person to a new interest, if interest (by its title) already exists, it connects the person to said interest
+E.g: _{
+    "Title": "Sample Interest",
+    "Description": "Description of the interest",
+}_
+
 `POST /persons/{personId}/interests`
 
 ## Links APIs
