@@ -25,8 +25,8 @@ E.g: _/persons/1/interests/search?query=Tennis_
 
 ### Connects a person to a new interest, if interest (by its title) already exists, it connects the person to said interest
 E.g: _{
-    "Title": "Sample Interest",
-    "Description": "Description of the interest",
+    "title": "Sample Interest",
+    "description": "Description of the interest",
 }_
 
 `POST /persons/{personId}/interests`
@@ -37,10 +37,15 @@ E.g: _{
 `GET /persons/{personId}/links`
 
 ### Returns all links of an interest connected to a specific person
-`POST /persons/{personId}/{interestId}`
+`POST /persons/{personId}/interests/{interestId}/links`
 
+_not working properly_
 ### Connect new link to an interest of a specific user
-`POST /persons/{personId}/{interestId}`
+E.g: _{
+    "linkToInterest": "samplelink"
+}_
+
+`POST /persons/{personId}/interests/{interestId}/links`
 
 
 ![ER-Diagram](https://github.com/bentonaw/MinimalAPIproject/assets/98620169/a10c5075-743a-426f-9a8f-e3eed7a93dc2)
