@@ -6,7 +6,9 @@
 `GET /persons`
 
 ### Return a list of all persons that include search query in either first or last name
-`GET /persons/{query}`
+_E.g: /persons/search?query=John_
+
+`GET /persons/search`
 
 ### Return a view of a specific person, lists everything connected to the person
 `GET /persons/{personId}`
