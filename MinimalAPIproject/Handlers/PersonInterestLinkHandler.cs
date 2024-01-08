@@ -37,8 +37,8 @@ namespace MinimalAPIproject.Handlers
             return Results.Json(result);
         }
 
-        // Adds link to interest tied to specific person
-        public static IResult AddLinkToInterestOfPerson(ApplicationContext context, int personId, string interestTitle, PersonInterestLinkDto newLink)
+        // Adds link to interest connected to specific person
+        public static IResult AddLinkToInterestOfPerson(ApplicationContext context, int personId, int interestId, PersonInterestLinkDto newLink)
         {
             Person person = HandlerUtilites.PersonFinder(context, personId);
             if (person == null)
@@ -47,7 +47,7 @@ namespace MinimalAPIproject.Handlers
             }
 
             Interest? interest = person.PersonInterests
-                .Where(pi => pi.Interest.Title == interestTitle)
+                .Where(pi => pi.Interest.InterestId == interestId)
                 .Select(pi => pi.Interest)
                 .SingleOrDefault();
 

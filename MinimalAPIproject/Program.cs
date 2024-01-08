@@ -42,8 +42,8 @@ namespace MinimalAPIproject
 
             // Connects a person to new interest, if interest (by its title) already exists it connects person to said interest
             /*{
-                "Title": "Sample Interest",
-                "Description": "Description of the interest",
+                "title": "Sample Interest",
+                "description": "Description of the interest",
             }*/
             app.MapPost("/persons/{personId}/interests", PersonInterestHandler.ConnectPersonToInterest);
 
@@ -53,10 +53,13 @@ namespace MinimalAPIproject
             app.MapGet("/persons/{personId}/links", PersonInterestLinkHandler.ListLinkToInterestsOfPerson);
 
             // Returns all links of an interest connected to a specific person
-            app.MapGet("/persons/{personId}/{interestid}", PersonInterestLinkHandler.LinksOfInterest);
+            app.MapGet("/persons/{personId}/interests/{interestid}/links", PersonInterestLinkHandler.LinksOfInterest);
 
             // Connect new link to an interest of a specific user
-            app.MapPost("/persons/{personId}/{interestId}", PersonInterestLinkHandler.AddLinkToInterestOfPerson);
+            /*{
+              "linkToInterest": "samplelink"
+            }*/
+            app.MapPost("/persons/{personId}/interests/{interestId}/links", PersonInterestLinkHandler.AddLinkToInterestOfPerson);
 
             app.Run();
         }
