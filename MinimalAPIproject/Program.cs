@@ -49,19 +49,10 @@ namespace MinimalAPIproject
             app.MapGet("/persons/{personId}/links", PersonInterestLinkHandler.ListLinkToInterestsOfPerson);
 
             // Returns all links of an interest connected to a specific person
-            app.MapPost("/persons/{personId}/{interestId}", PersonInterestLinkHandler.LinksOfInterest);
+            app.MapGet("/persons/{personId}/{interestid}", PersonInterestLinkHandler.LinksOfInterest);
 
             // Connect new link to an interest of a specific user
             app.MapPost("/persons/{personId}/{interestId}", PersonInterestLinkHandler.AddLinkToInterestOfPerson);
-
-           
-            //// edit person
-            ////app.MapPut
-            //// edit phonenumber
-            //// edit link
-            //// edit interest
-
-            //// returns searched for query?
 
             app.Run();
         }

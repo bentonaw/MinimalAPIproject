@@ -74,7 +74,7 @@ namespace MinimalAPIproject.Handlers
         }
 
         // Returns all links to specific interest of specific person
-        public static IResult LinksOfInterest(ApplicationContext context, int personId, string interestTitle)
+        public static IResult LinksOfInterest(ApplicationContext context, int personId, int interestId)
         {
             Person person = HandlerUtilites.PersonFinder(context, personId);
             if (person == null)
@@ -83,7 +83,7 @@ namespace MinimalAPIproject.Handlers
             }
 
             Interest? interest = person.PersonInterests
-                .Where(pi => pi.Interest.Title == interestTitle)
+                .Where(pi => pi.Interest.InterestId == interestId)
                 .Select(pi => pi.Interest)
                 .SingleOrDefault();
 
