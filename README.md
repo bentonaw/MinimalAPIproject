@@ -60,6 +60,9 @@ E.g: _{
 `POST /people/{personId}/interests/{interestId}/links`
 
 
+![ERdiagram2](https://github.com/bentonaw/MinimalAPIproject/assets/98620169/25f1c0f0-b940-4901-9398-150da836be4e)
+
+
 
 # Person APIs (for 1st version)
 
